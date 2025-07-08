@@ -22,45 +22,40 @@
 
 ## 🔧 Installation & Usage
 
- ✅ Clone the Repository
+#✅ Clone the Repository
 
 git clone https://github.com/priyapulakhandam/Clip2Text.git
+
 cd Clip2Text
 
 ---
 
-✅ Install Dependencies
+#✅ Install Dependencies
 
-bash
-Copy
-Edit
 pip install -r requirements.txt
 
 ---
 
-✅ Set Your Hugging Face API Key
+#✅ Set Your Hugging Face API Key
 
 Set your API key in your environment variables before running the app:
 
 On Windows:
-bash
-Copy
-Edit
+
 set HF_API_KEY=your_huggingface_api_key
+
 On macOS/Linux:
-bash
-Copy
-Edit
+
 export HF_API_KEY=your_huggingface_api_key
 
 ---
 
-✅ Run the Application
-bash
-Copy
-Edit
+#✅ Run the Application
+
 python app.py
+
 Then open your browser and go to:
+
 http://localhost:5000
 
 ---
