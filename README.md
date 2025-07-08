@@ -21,6 +21,7 @@
 - **APIs/Libraries:** `openai-whisper`, `yt-dlp`, `flask-cors`, `torch`, `requests`
 
 ---
+---
 🔧 Installation & Usage
 1. Clone the Repository
 bash
@@ -94,3 +95,4 @@ Edit
 
 🔹 The video explains the concept of...
 🔹 It highlights the importance of...
+---
