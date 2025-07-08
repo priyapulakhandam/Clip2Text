@@ -20,22 +20,18 @@
 - **Frontend:** HTML, CSS, Bootstrap 5
 - **APIs/Libraries:** `openai-whisper`, `yt-dlp`, `flask-cors`, `torch`, `requests`
 
----
-🔧 Installation & Usage
-1. Clone the Repository
-bash
-Copy
-Edit
+## 🔧 Installation & Usage
+
+# ✅ Clone the Repository
+
 git clone https://github.com/priyapulakhandam/Clip2Text.git
 cd Clip2Text
----
-3. Install Dependencies
+#✅ Install Dependencies
 bash
 Copy
 Edit
 pip install -r requirements.txt
----
-5. Set Your Hugging Face API Key
+#✅ Set Your Hugging Face API Key
 Set your API key in your environment variables before running the app:
 
 On Windows:
@@ -48,40 +44,19 @@ bash
 Copy
 Edit
 export HF_API_KEY=your_huggingface_api_key
----
-4. Run the Application
+#✅ Run the Application
 bash
 Copy
 Edit
 python app.py
 Then open your browser and go to:
 http://localhost:5000
----
 
-📂 File Structure
-bash
-Copy
-Edit
-Clip2Text/
-├── app.py            # Flask backend (YouTube, Whisper, Hugging Face)
-├── index.html        # Frontend HTML interface
-├── requirements.txt  # Python dependencies
----
-📜 Example Output
-Paste a YouTube video link like:
 
-arduino
-Copy
-Edit
-https://www.youtube.com/watch?v=dQw4w9WgXcQ
----
-And get a summary like:
 
-cpp
 Copy
 Edit
 📋 Summary:
 
 🔹 The video explains the concept of...
 🔹 It highlights the importance of...
----
