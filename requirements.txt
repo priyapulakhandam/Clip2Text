@@ -1,5 +1,5 @@
-flask
+streamlit
 python-dotenv
-yt-dlp
 requests
+yt-dlp
 groq
