@@ -1,4 +1,3 @@
-
 import os
 import time
 import random
@@ -20,6 +19,42 @@ logging.basicConfig(level=logging.WARNING)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 GROQ_KEY = os.getenv("GROQ_KEY") or os.getenv("GROQ_API_KEY") or ""
+
+# ============================================================
+# ✅ Permanent History (JSON file)
+# ============================================================
+HISTORY_FILE = "clip2text_history.json"
+
+
+def load_history():
+    """Load history from JSON file."""
+    if os.path.exists(HISTORY_FILE):
+        try:
+            with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return data if isinstance(data, list) else []
+        except Exception:
+            return []
+    return []
+
+
+def save_history(history_list):
+    """Save history to JSON file."""
+    try:
+        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(history_list, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+
+
+def delete_history_item(index: int):
+    """Delete a single history item."""
+    try:
+        st.session_state.history.pop(index)
+        save_history(st.session_state.history)
+    except Exception:
+        pass
+
 
 # ============================================================
 # UI logger
@@ -180,7 +215,7 @@ def extract_transcript(yt_url: str, prefer_lang="en", log_box=None):
 
 
 # ============================================================
-# ✨ Summarize with Groq 
+# ✨ Summarize with Groq
 # ============================================================
 def summarize_with_groq(transcript: str, title: str, style: str, log_box=None) -> str:
     ui_log(log_box, "🧠 Generating summary...")
@@ -257,13 +292,12 @@ Transcript:
     res = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.45,   
-        max_tokens=22000,    
+        temperature=0.45,
+        max_tokens=22000,
     )
 
     ui_log(log_box, " Summary ready.")
     return res.choices[0].message.content.strip()
-
 
 
 # ============================================================
@@ -271,22 +305,142 @@ Transcript:
 # ============================================================
 st.set_page_config(
     page_title="Clip2Text Premium",
-    page_icon="▶️",  
-    layout="wide"
+    page_icon="▶️",
+    layout="wide",
+    initial_sidebar_state="expanded"   # ✅ sidebar always visible
 )
 
 if "logs" not in st.session_state:
     st.session_state.logs = []
 
-# Hide streamlit default
+# ✅ history states
+if "history" not in st.session_state:
+    st.session_state.history = load_history()
+
+if "page" not in st.session_state:
+    st.session_state.page = "summarize"
+
+if "active_item" not in st.session_state:
+    st.session_state.active_item = None
+
+if "search_query" not in st.session_state:
+    st.session_state.search_query = ""
+
+
+def go_new():
+    st.session_state.page = "summarize"
+    st.session_state.active_item = None
+    st.session_state.logs = []
+
+
+def open_history(idx):
+    st.session_state.page = "view"
+    st.session_state.active_item = idx
+
+
+# ============================================================
+# ✅ Sidebar style + ChatGPT layout
+# ============================================================
+st.markdown("""
+<style>
+section[data-testid="stSidebar"]{
+  background:#0b1220 !important;
+  border-right: 1px solid rgba(255,255,255,.08);
+}
+section[data-testid="stSidebar"] * { color: white !important; }
+.sidebar-btn button{
+  width:100% !important;
+  border-radius:14px !important;
+  font-weight:900 !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+with st.sidebar:
+    st.markdown("## ▶️ Clip2Text")
+    st.caption("Premium Summarizer")
+
+    # ➕ New button
+    st.markdown('<div class="sidebar-btn">', unsafe_allow_html=True)
+    if st.button("➕ New", use_container_width=True):
+        go_new()
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("---")
+    st.markdown("### 🕘 History")
+
+    # Search box
+    st.session_state.search_query = st.text_input(
+        "Search history", value=st.session_state.search_query, placeholder="Search by title..."
+    ).strip().lower()
+
+    history_list = st.session_state.history
+
+    if st.session_state.search_query:
+        history_list = [h for h in history_list if st.session_state.search_query in h.get("title", "").lower()]
+
+    if len(history_list) == 0:
+        st.info("No history yet.\n\nGenerate 1 summary and it appears here ✅")
+    else:
+        for item in reversed(history_list):
+            original_index = st.session_state.history.index(item)
+            title = item.get("title", "Untitled")
+            label = title[:34] + ("..." if len(title) > 34 else "")
+
+            c1, c2 = st.columns([0.78, 0.22])
+
+            with c1:
+                if st.button(f"📌 {label}", key=f"hist_{original_index}", use_container_width=True):
+                    open_history(original_index)
+
+            with c2:
+                if st.button("🗑️", key=f"del_{original_index}", use_container_width=True):
+                    delete_history_item(original_index)
+                    st.toast("Deleted from history ✅", icon="🗑️")
+                    st.rerun()
+
+
+# Hide streamlit default (but KEEP header visible so sidebar toggle works)
 st.markdown("""
 <style>
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
-header {visibility: hidden;}
+/* header removed from hiding so sidebar toggle stays accessible */
 .block-container {padding-top: 0 !important; padding-bottom: 2rem;}
 </style>
 """, unsafe_allow_html=True)
+
+
+# ============================================================
+# ✅ VIEW HISTORY PAGE
+# ============================================================
+if st.session_state.page == "view" and st.session_state.active_item is not None:
+    item = st.session_state.history[st.session_state.active_item]
+
+    st.markdown("## 📌 Saved Summary")
+    st.caption(f"{item.get('channel','')} • {item.get('subs_type','')} • {item.get('lang','')}")
+
+    st.markdown(f"### 🎬 {item.get('title','')}")
+    st.markdown(f"🔗 {item.get('url','')}")
+    st.markdown("---")
+    st.markdown(item.get("summary", ""))
+
+    st.markdown("### ⬇️ Downloads")
+    d1, d2 = st.columns(2)
+    with d1:
+        st.download_button("⬇️ Download Summary", item.get("summary", ""), file_name="clip2text_summary.txt")
+    with d2:
+        st.download_button("⬇️ Download Transcript", item.get("transcript", ""), file_name="clip2text_transcript.txt")
+
+    if st.button("⬅️ Back to summarizer"):
+        go_new()
+
+    st.stop()
+
+
+# ============================================================
+# ✅ ORIGINAL UI CONTINUES (UNCHANGED BELOW)
+# ============================================================
 
 st.markdown(r"""
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -547,6 +701,21 @@ if submitted:
     render_timeline(active_step=3)
 
     took = time.time() - t0
+
+    # ✅ Save to history (permanent)
+    st.session_state.history.append({
+        "title": meta["title"],
+        "channel": meta["channel"],
+        "url": yt_url,
+        "summary": summary,
+        "transcript": cleaned_transcript,
+        "lang": meta["lang"],
+        "subs_type": meta["subs_type"],
+        "ts": time.strftime("%Y-%m-%d %H:%M"),
+        "time_taken": took,
+    })
+    save_history(st.session_state.history)
+    st.toast("✅ Saved in history!", icon="📌")
 
     # ============================================================
     # Result UI
