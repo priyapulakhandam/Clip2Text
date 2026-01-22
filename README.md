@@ -6,23 +6,23 @@ It includes  live logs, timeline steps, video thumbnail preview, and downloadabl
 
 ---
 
-## ✨ Features
-
   
-✅ Captions extraction via **yt-dlp** (manual + auto captions)  
-✅ Intelligent transcript cleaning  
-✅ Groq-powered summary styles:
-- Short & crisp
-- Detailed notes
-- Study notes (structured)
-- Job interview takeaways
-- Executive brief
+## ✨ Key Features
 
+- **YouTube Captions Extraction:** Automatically fetches subtitles using **yt-dlp**, supporting both **manual captions** and **auto-generated captions**.
+- **Transcript Processing:** Cleans and de-duplicates subtitle text for smoother and more accurate summarization.
+- **Multiple Summary Styles (Groq-powered):**
+  - Short & Crisp (quick overview)
+  - Detailed Notes (in-depth explanation)
+  - Study Notes (structured learning format)
+  - Job Interview Takeaways (skills + Q&A focused)
+  - Executive Brief (decision-style summary)
 
-✅ Live logs in UI  
-✅ Download outputs:
-- Summary `.txt`
-- Transcript `.txt`
+- **Live Workflow Logs:** Real-time logs displayed in the UI for transparent processing and debugging.
+- **Downloadable Results:** Export outputs instantly:
+  - Summary as `.txt`
+  - Transcript as `.txt`
+
 
 ---
 
@@ -38,10 +38,8 @@ It includes  live logs, timeline steps, video thumbnail preview, and downloadabl
 
 ## 📂 Project Structure
 
-```bash
 clip2text-premium/
 ├── app.py
 ├── requirements.txt
 └── README.md
 
----
