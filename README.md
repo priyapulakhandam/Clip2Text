@@ -48,30 +48,32 @@ clip2text-premium/
 ##🧪 Run Locally (Setup)
 
  1) Clone the Repository
----
+```bash
 git clone https://github.com/<YOUR_USERNAME>/clip2text-premium.git
 cd clip2text-premium
----
+```
 
- 2) Install Dependencies
 
----
+ 3) Install Dependencies
+
+```bash
 pip install -r requirements.txt
----
+```
 
 3) Add Groq API Key
 
 Create a .env file inside the project folder:
----
+```bash
 GROQ_KEY=YOUR_GROQ_API_KEY
----
+```
 
 ✅ 4) Run the App
----
+```bash
 streamlit run app.py
----
+```
 
 
 Open in browser:
-
+```bash
 http://localhost:8501
+```
