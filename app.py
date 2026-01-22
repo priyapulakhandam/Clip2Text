@@ -1,12 +1,3 @@
-# Clip2Text Premium - Streamlit Only (Single file)
-# Features:
-# ✅ Integrated Premium UI (HTML inside app.py)
-# ✅ Real animated progress bar
-# ✅ Timeline steps (Extracting → Cleaning → Summarizing)
-# ✅ Dark glass download buttons matching theme
-# ✅ Clip2Text heading in navbar + hero
-# ✅ Browser tab icon (YouTube-like)
-# ✅ YouTube thumbnail preview + badge under preview
 
 import os
 import time
@@ -21,7 +12,7 @@ from yt_dlp import YoutubeDL
 from groq import Groq
 
 # ============================================================
-# 🔧 Setup
+#  Setup
 # ============================================================
 load_dotenv()
 
@@ -31,7 +22,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 GROQ_KEY = os.getenv("GROQ_KEY") or os.getenv("GROQ_API_KEY") or ""
 
 # ============================================================
-# 🧠 UI logger
+# UI logger
 # ============================================================
 def ui_log(box, msg: str):
     print(msg)
@@ -41,7 +32,7 @@ def ui_log(box, msg: str):
 
 
 # ============================================================
-# 🎞️ YouTube helpers (thumbnail preview)
+#  YouTube helpers (thumbnail preview)
 # ============================================================
 def get_yt_id(url: str):
     if not url:
@@ -65,7 +56,7 @@ def yt_thumbnail(video_id: str) -> str:
 
 
 # ============================================================
-# 🧼 Transcript cleaning
+#  Transcript cleaning
 # ============================================================
 def clean_transcript(text: str) -> str:
     lines = [line.strip() for line in text.splitlines() if line.strip()]
@@ -97,7 +88,7 @@ def json3_to_text(json3_text: str) -> str:
 
 
 # ============================================================
-# 🌐 Fetch with retry (YouTube captions can 429)
+#  Fetch with retry (YouTube captions can 429)
 # ============================================================
 def fetch_with_retry(url: str, tries: int = 8, log_box=None) -> str:
     session = requests.Session()
@@ -117,7 +108,7 @@ def fetch_with_retry(url: str, tries: int = 8, log_box=None) -> str:
 
         if r.status_code == 429:
             wait = (2 ** attempt) + random.uniform(0.5, 2.0)
-            ui_log(log_box, f"⚠️ Rate-limited while fetching captions. Retry in {wait:.1f}s ...")
+            ui_log(log_box, f" Rate-limited while fetching captions. Retry in {wait:.1f}s ...")
             time.sleep(wait)
             continue
 
@@ -154,7 +145,7 @@ def extract_transcript(yt_url: str, prefer_lang="en", log_box=None):
         raise RuntimeError("No captions/subtitles available for this video.")
 
     lang = prefer_lang if prefer_lang in subs else list(subs.keys())[0]
-    ui_log(log_box, f"✅ Captions found ({subs_type}) | Language: {lang}")
+    ui_log(log_box, f" Captions found ({subs_type}) | Language: {lang}")
 
     chosen = subs[lang]
 
@@ -189,21 +180,21 @@ def extract_transcript(yt_url: str, prefer_lang="en", log_box=None):
 
 
 # ============================================================
-# ✨ Summarize with Groq (FIXED LIMITS ✅)
+# ✨ Summarize with Groq 
 # ============================================================
 def summarize_with_groq(transcript: str, title: str, style: str, log_box=None) -> str:
     ui_log(log_box, "🧠 Generating summary...")
 
     transcript = (transcript or "").strip()
 
-    # ✅ limit transcript
+    #  limit transcript
     if len(transcript) > 14000:
         ui_log(log_box, f"✂️ Transcript too long ({len(transcript)} chars). Cutting to 14,000 chars.")
         transcript = transcript[:14000]
 
     client = Groq(api_key=GROQ_KEY)
 
-    # ✅ Different instruction for each style (THIS makes output change)
+    # Different instruction for each style (THIS makes output change)
     style_prompts = {
         "Short & crisp": """
 Write a very short summary.
@@ -266,11 +257,11 @@ Transcript:
     res = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.45,   # ✅ slightly higher so styles differ
-        max_tokens=22000,    # ✅ safe
+        temperature=0.45,   
+        max_tokens=22000,    
     )
 
-    ui_log(log_box, "✅ Summary ready.")
+    ui_log(log_box, " Summary ready.")
     return res.choices[0].message.content.strip()
 
 
@@ -280,7 +271,7 @@ Transcript:
 # ============================================================
 st.set_page_config(
     page_title="Clip2Text Premium",
-    page_icon="▶️",  # ✅ YouTube-like icon for browser tab
+    page_icon="▶️",  
     layout="wide"
 )
 
@@ -297,7 +288,6 @@ header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
-# Premium CSS + Header UI (Clip2Text heading added ✅)
 st.markdown(r"""
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 <style>
@@ -435,7 +425,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ============================================================
-# ✅ Functional form + Thumbnail Preview + YT Badge
+#  Functional form + Thumbnail Preview 
 # ============================================================
 with st.form("premium_form"):
     yt_url = st.text_input("YouTube URL", placeholder="https://www.youtube.com/watch?v=...")
@@ -482,7 +472,7 @@ with st.form("premium_form"):
 log_box = st.empty() if show_logs else None
 
 # ============================================================
-# ✅ Animated progress bar + timeline
+#  Animated progress bar + timeline
 # ============================================================
 def animate_progress(progress_bar, start, end, duration=0.8):
     steps = max(1, int((end - start) / 2))
@@ -504,7 +494,7 @@ def render_timeline(active_step: int):
 
 
 # ============================================================
-# ✅ Run summarization
+# Run summarization
 # ============================================================
 if submitted:
     if not yt_url.strip():
@@ -559,7 +549,7 @@ if submitted:
     took = time.time() - t0
 
     # ============================================================
-    # ✅ Result UI
+    # Result UI
     # ============================================================
     st.markdown("---")
     st.markdown(f"""
@@ -585,19 +575,19 @@ if submitted:
     st.markdown(summary)
 
     # Glass download buttons
-    st.markdown("### ⬇️ Downloads")
+    st.markdown("### Downloads")
     dl1, dl2 = st.columns(2)
     with dl1:
         st.markdown('<div class="glass-download">', unsafe_allow_html=True)
-        st.download_button("⬇️ Download Summary (.txt)", data=summary, file_name="clip2text_summary.txt")
+        st.download_button(" Download Summary (.txt)", data=summary, file_name="clip2text_summary.txt")
         st.markdown('</div>', unsafe_allow_html=True)
 
     with dl2:
         st.markdown('<div class="glass-download">', unsafe_allow_html=True)
-        st.download_button("⬇️ Download Transcript (.txt)", data=cleaned_transcript, file_name="clip2text_transcript.txt")
+        st.download_button(" Download Transcript (.txt)", data=cleaned_transcript, file_name="clip2text_transcript.txt")
         st.markdown('</div>', unsafe_allow_html=True)
 
     if show_transcript:
         st.text_area("Transcript", cleaned_transcript, height=300)
 
-    st.success("🎉 Completed successfully!")
+    st.success("Completed successfully!")
