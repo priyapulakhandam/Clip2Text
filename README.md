@@ -36,10 +36,42 @@ It includes  live logs, timeline steps, video thumbnail preview, and downloadabl
 
 ---
 
-## 📂 Project Structure
+## 📁 Project Structure
 
+```bash
 clip2text-premium/
-├── app.py
-├── requirements.txt
-└── README.md
+├── app.py               # Streamlit app (Premium UI + Groq summarizer)
+├── requirements.txt     # Python dependencies
+└── README.md            # Documentation
+```
 
+##🧪 Run Locally (Setup)
+
+ 1) Clone the Repository
+---
+git clone https://github.com/<YOUR_USERNAME>/clip2text-premium.git
+cd clip2text-premium
+---
+
+ 2) Install Dependencies
+
+---
+pip install -r requirements.txt
+---
+
+3) Add Groq API Key
+
+Create a .env file inside the project folder:
+---
+GROQ_KEY=YOUR_GROQ_API_KEY
+---
+
+✅ 4) Run the App
+---
+streamlit run app.py
+---
+
+
+Open in browser:
+
+http://localhost:8501
