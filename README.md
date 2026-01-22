@@ -1,6 +1,6 @@
 # Clip2Text— YouTube Captions → Smart Summary 
 
-Clip2Text is a modern **Streamlit-based web app** that extracts **YouTube captions (manual/auto)** and converts them into a **premium structured summary** using the **Groq LLM API**.
+Clip2Text is a modern **Streamlit-based web app** that extracts **YouTube captions (manual/auto)** and converts them into a ** structured summary** using the **Groq LLM API**.
 
 It includes  live logs, timeline steps, video thumbnail preview, and downloadable results.
 
@@ -50,8 +50,8 @@ clip2text-premium/
  1) Clone the Repository
     
 ```bash
-git clone https://github.com/<YOUR_USERNAME>/clip2text-premium.git
-cd clip2text-premium
+git clone https://github.com/priyapulakhandam/Clip2Text.git
+cd Clip2Text
 ```
 
 
