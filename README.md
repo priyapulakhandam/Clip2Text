@@ -1,4 +1,4 @@
-# Clip2Text— YouTube Captions → Smart Summary 
+# Clip2Text- YouTube Captions → Smart Summary 
 
 Clip2Text is a modern **Streamlit-based web app** that extracts **YouTube captions (manual/auto)** and converts them into a ** structured summary** using the **Groq LLM API**.
 
